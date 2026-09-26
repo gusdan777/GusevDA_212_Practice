@@ -1,5 +1,6 @@
 #include "DynamicArray.h"
 #include <iostream>
+#include <stdexcept>
 
 using namespace std;
 
@@ -13,11 +14,9 @@ bool DynamicArray::isIndexValid(int index) {
 
 DynamicArray::DynamicArray(int size) {
     if (size < 0) {
-        cerr << "Error: size cannot be negative\n";
-        this->size = 0;
-    } else {
-        this->size = size;
+        throw invalid_argument("size cannot be negative");
     }
+    this->size = size;
     data = new int[this->size];
     for (int i = 0; i < this->size; ++i) {
         data[i] = 0;
@@ -41,24 +40,21 @@ void DynamicArray::print() {
 
 void DynamicArray::set(int index, int value) {
     if (!isIndexValid(index)) {
-        cerr << "Error: index " << index << " is out of bounds\n";
-        return;
+        throw out_of_range("index " + to_string(index) + " is out of bounds");
     }
     if (!isValueInRange(value)) {
-        cerr << "Error: value " << value << " is out of range\n";
-        return;
+        throw invalid_argument("value " + to_string(value) + " is out of range [-100, 100]");
     }
     data[index] = value;
 }
 
 int DynamicArray::get(int index) {
     if (!isIndexValid(index)) {
-        std::cerr << "Error: index " << index << " is out of bounds\n";
-        return 0;
+        throw out_of_range("index " + to_string(index) + " is out of bounds");
     }
     return data[index];
 }
-
+ 
 DynamicArray::DynamicArray(const DynamicArray& other) {
     size = other.size;
     data = new int[size];
@@ -69,8 +65,7 @@ DynamicArray::DynamicArray(const DynamicArray& other) {
 
 void DynamicArray::pushBack(int value) {
     if (!isValueInRange(value)) {
-        std::cerr << "Error: value " << value << " is out of range\n";
-        return;
+        throw invalid_argument("value " + to_string(value) + " is out of range [-100, 100]");
     }
 
     int* newData = new int[size + 1];
