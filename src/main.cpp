@@ -1,11 +1,14 @@
 #include "DynamicArray.h"
 #include <iostream>
+#include <stdexcept>
+#include <limits>
 
 using namespace std;
 
 int main() {
-    int size = 5, sizeA = 4, sizeB = 6;
 
+    cout << "Part 1\n";
+    int size = 5, sizeA = 4, sizeB = 6;
     cout << "Task 1\n";
     cout << "Let's take an array of size 5.\n";
     DynamicArray arr(size);
@@ -18,12 +21,6 @@ int main() {
     cout << "After completion: ";
     arr.print();
     cout << "arr.get(2) = " << arr.get(2) << "\n";
-
-    cout << "Error check:\n";
-    arr.set(size + 1, 5);
-    arr.set(0, 500);
-    arr.get(-1);
-    cout << "\n";
 
     std::cout << "Task 2\n";
     DynamicArray copyArr(arr);
@@ -42,7 +39,6 @@ int main() {
     arr.pushBack(77);
     cout << "After pushBack(77): ";
     arr.print();
-    arr.pushBack(1000);
     cout << "\n";
 
     cout << "Task 4\n";
@@ -56,10 +52,35 @@ int main() {
     cout << "arrB: "; arrB.print();
 
     arrA.add(arrB);
-    std::cout << "arrA.add(arrB): "; arrA.print();
-    std::cout << "The size of arrA has not changed, size = " << sizeA << "\n";
+    cout << "arrA.add(arrB): "; arrA.print();
+    cout << "The size of arrA has not changed, size = " << sizeA << "\n";
     arrA.subtract(arrB);
-    std::cout << "arrA.subtract(arrB): "; arrA.print();
+    cout << "arrA.subtract(arrB): "; arrA.print();
+    cout << "\n";
+
+    cout << "Part 2\n";
+    cout << "std::out_of_range (index out of bounds)\n";
+    try {
+        arr.get(100);
+    } catch (const out_of_range& e) {
+        cout << "Caught std::out_of_range: " << e.what() << "\n";
+    }
+    
+    cout << "std::invalid_argument (value outside [-100, 100])\n";
+    try {
+        arr.set(0, 500);
+    } catch (const invalid_argument& e) {
+        cout << "Caught std::invalid_argument: " << e.what() << "\n";
+    }
+
+    cout << "std::bad_alloc (allocation failure)\n";
+    try {
+        size_t hugeElem = (static_cast<size_t>(1) << 50);
+        int* raw = new int[hugeElem];
+        delete[] raw;
+    } catch (const bad_alloc& e) {
+        cout << "Caught std::bad_alloc " << e.what() << "\n";
+    }
 
     return 0;
 }
