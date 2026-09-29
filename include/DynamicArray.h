@@ -4,6 +4,7 @@
 #include <type_traits>
 #include <typeinfo>
 #include <cmath>
+#include <string>
  
 using namespace std;
  
@@ -40,7 +41,7 @@ public:
         delete[] data;
     }
  
-    void print() {
+    void print() const{
         cout << "[";
         for (int i = 0; i < size; ++i) {
             cout << data[i];
@@ -120,8 +121,71 @@ public:
     int getSize() const {
         return size;
     }
+
+    T& operator[](int index) {
+        if (!isIndexValid(index)) {
+            throw out_of_range("index " + to_string(index) + " is out of bounds");
+        }
+        return data[index];
+    }
+
+    bool operator==(const DynamicArray& other) const {
+        if (size != other.size) {
+            return false;
+        }
+        for (int i = 0; i < size; i++) {
+            if (data[i] != other.data[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    bool operator!=(const DynamicArray& other) const {
+        return !(*this == other);
+    }
+    
+    DynamicArray& operator+=(const DynamicArray& other) {
+        add(other);
+        return *this;
+    }
+
+    DynamicArray& operator-=(const DynamicArray& other) {
+        sub(other);
+        return *this;
+    }
+
+    DynamicArray& operator+=(const T& value) {
+        for (int i = 0; i < size; i++) {
+            data[i] = data[i] + value;
+        }
+        return *this;
+    }
+
+    DynamicArray& operator-=(const T& value) {
+        for (int i = 0; i < size; i++) {
+            data[i] = data[i] - value;
+        }
+        return *this;
+    }
+
+    T* begin() {
+        return data;
+    }
+
+    T* end() {
+        return data + size;
+    }
+
+    const T* begin() const {
+        return data;
+    }
+
+    const T* end() const {
+        return data + size;
+    }
 };
- 
+
 template <typename T>
 ostream& operator<<(ostream& stream, const DynamicArray<T>& arr) {
     stream << "[";
