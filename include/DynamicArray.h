@@ -184,6 +184,35 @@ public:
     const T* end() const {
         return data + size;
     }
+
+    DynamicArray& operator=(const DynamicArray& other) {
+        if (this == &other) return *this;
+        T* newData = new T[other.size];
+        for (int i = 0; i < other.size; i++) {
+            newData[i] = other.data[i];
+        }
+        delete[] data;
+        data = newData;
+        size = other.size;
+        return *this;
+    }
+
+    DynamicArray(DynamicArray&& other) noexcept {
+        data = other.data;
+        size = other.size;
+        other.data = nullptr;
+        other.size = 0;
+    }
+
+    DynamicArray& operator=(DynamicArray&& other) noexcept {
+        if (this == &other) return *this;
+        delete[] data;
+        data = other.data;
+        size = other.size;
+        other.data = nullptr;
+        other.size = 0;
+        return *this;
+    }
 };
 
 template <typename T>
